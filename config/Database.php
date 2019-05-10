@@ -174,6 +174,38 @@ class Database{
     /**
      *
      * @function
+     * @memberof config:Database
+     * @name OnFetchAllData
+     * @description Used to fetch all data of a table.
+     * @parameter $tableName.
+     * @returnVal all rows
+     */
+    function OnFetchAllData($tableName)
+    {
+        $sql = "SELECT * FROM $tableName ORDER BY id DESC";
+        $isExists = mysqli_query($this->connection, $sql);
+        $fetchedData = array();
+        if (mysqli_num_rows($isExists) > 0) {
+            while ($row = mysqli_fetch_assoc($isExists)) {
+                array_push($fetchedData, $row);
+            }
+            return array(
+                'status' => TRUE,
+                'message' => 'Data exists!!',
+                'data' => $fetchedData
+            );
+        } else {
+            return array(
+                'status' => FALSE,
+                'message' => 'No data exists!!',
+                'data' => array()
+            );
+        }
+    }
+    
+    /**
+     *
+     * @function
      * @memberof config:DBConfig
      * @name OnFetchSingle
      * @description Used to fetch single data on basis of unique key.
