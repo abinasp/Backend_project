@@ -16,9 +16,10 @@ CREATE TABLE customers(
 	`address` text,
 	`mobile` VARCHAR(256) DEFAULT '',
 	`national_id` VARCHAR(256) DEFAULT '',
-	`type` ENUM('Monthly','One time', 'Daily');
+	`type` ENUM('Monthly','One time', 'Daily'),
 	`amount` VARCHAR(256) DEFAULT '',
 	`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY(`id`)
 );
+

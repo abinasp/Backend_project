@@ -8,9 +8,19 @@ class CustomerService {
     function OnRun($method) {
         switch($method){
             case 'register-customer':
+                echo $this->OnCreateCustomer();
+                break;
             case 'update-customer':
+                echo $this->OnUpdateCustomer();
+                break;
             case 'get-customers':
+                echo $this->OnGetCustomers();
+                break;
             case 'delete-customers':
+                echo $this->OnDeleteCustomer();
+                break;
+            default:
+                return json_encode(array('success'=>FALSE,'message'=>'Invalid route'));
         }
     }
     
