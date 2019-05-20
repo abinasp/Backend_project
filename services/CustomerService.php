@@ -16,6 +16,9 @@ class CustomerService {
             case 'get-customers':
                 echo $this->OnGetCustomers();
                 break;
+            case 'get-single-customer':
+                echo $this->OnGetSingleCustomer();
+                break;
             case 'delete-customers':
                 echo $this->OnDeleteCustomer();
                 break;
@@ -105,13 +108,6 @@ class CustomerService {
         try{
             $db = new Database();
             $postData = json_decode(@file_get_contents('php://input'),TRUE);
-            $auth = $postData['auth'];
-            if(!isset($auth)){
-                throw new Exception('Authentication is required.');
-            }
-            if(!$auth){
-                throw new Exception('Please login.');
-            }
             $fetchCustomers = $db->OnFetchAllData('customers');
             if(!$fetchCustomers['status']){
                 throw new Exception('Error in fetching all customers.');
@@ -122,6 +118,32 @@ class CustomerService {
         }
     }
     
+
+    /**
+     *
+     * @function
+     * @memberof services:CustomerService
+     * @name OnGetSingleCustomer
+     * @description Used to get single customers.
+     * @returnVal get one customer
+     */
+    
+    function OnGetSingleCustomer(){
+        try{
+            $db = new Database();
+            $postData = json_decode(@file_get_contents('php://input'),TRUE);
+            $customerId = $postData['customer_id'];
+            $customerData = array('id'=>$customerId);
+            $fetchCustomers = $db->OnFetchSingle('customers',$customerData);
+            if(!$fetchCustomers['status']){
+                throw new Exception('Error in fetching all customers.');
+            }
+            return json_encode(array('success'=>TRUE, 'message'=>'List of customers are found.', 'data'=>$fetchCustomers['data']));
+        }catch(Exception $ex){
+            return json_encode(array('success'=>FALSE, 'message'=>'Error in getting all customers','error'=>$ex->getMessage()));
+        }
+    }
+
     /**
      *
      * @function

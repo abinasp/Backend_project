@@ -1,6 +1,5 @@
 <?php
 require_once 'config/config.php';
-require_once 'services/ProductService.php';
 require_once 'services/UserService.php';
 require_once 'services/CustomerService.php';
 
