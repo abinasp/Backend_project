@@ -177,5 +177,34 @@ class CustomerService {
             return json_encode(array('success'=>FALSE, 'message'=>'Error in deleteing customer','error'=>$ex->getMessage()));
         }
     }
+
+    function OnUploadImage()
+    {
+        try {
+            $image = $_FILES['image'];
+            if (! isset($image)) {
+                throw new Exception('Atleast upload one photo!!');
+            }
+            $imageName = $_FILES['image']['name'];
+            $imageTempName = $_FILES['image']['tmp_name'];
+            $imageError = $_FILES['image']['error'];
+            $imageSize = $_FILES['image']['size'];
+            $uploadPanCard = UploadPhoto('Customers', $imageName, $imageTempName, $imageError, $imageSize);
+            if (! $uploadPanCard['status']) {
+                throw new Exception($uploadPanCard['message']);
+            }
+            return json_encode(array(
+                'success' => TRUE,
+                'message' => 'Image has been uploaded successfully.',
+                'data' => $uploadPanCard['data']
+            ));
+        } catch (Exception $ex) {
+            return json_encode(array(
+                'success' => FALSE,
+                'message' => "Error in uploading images.",
+                'error' => $ex->getMessage()
+            ));
+        }
+    }
 }
 ?>
