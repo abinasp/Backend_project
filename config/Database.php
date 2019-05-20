@@ -4,8 +4,8 @@ class Database{
     var $connection;
     
     var $db_host = 'localhost';
-    var $db_username = 'abinas';
-    var $db_password = 'root';
+    var $db_username = 'tb-agds';
+    var $db_password = 'AGDS';
     var $db_name = 'somobay_somiti';
     
     /**

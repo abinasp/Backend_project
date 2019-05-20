@@ -81,9 +81,9 @@ class UserService
             if(!isset($user)){
                 throw new Exception('User is required for log in.');
             }
-            $fetchUser = $db->OnFetchSingle('users', $user);
+            $fetchUser = $db->OnFetchData('users', $user);
             if(!$fetchUser['status']){
-                throw new Exception("User doesn't exist");
+                throw new Exception("User doesn't exist or wrong password");
             }
             return json_encode(array('success'=>TRUE,'message'=>'Login successful'));
         } catch (Exception $ex) {
@@ -94,5 +94,66 @@ class UserService
             ));
         }
     }
+
+    function OnCreateUser(){
+        try{
+            $db = new Database();
+            $postData = json_decode(@file_get_contents('php://input'),TRUE);
+            $user = $postData['user'];
+            $auth = $postData['auth'];
+            if(!isset($auth)){
+                throw new Exception('Authentication is required.');
+            }
+            if(!$auth){
+                throw new Exception('Please Login.');
+            }
+            if(!isset($user)){
+                throw new Exception('Employee is required for creating.');
+            }
+            $userData = array('username'=>$user['username']);
+            $fetchUser = $db->OnFetchSingle('users', $userData);
+            if($fetchUser['status']){
+                throw new Exception('Username is already exist.');
+            }
+            $insertUser = $db->OnInsertData('users',$user);
+            if(!$insertUser['status']){
+                throw new Exception('Error in inserting data');
+            }
+            return json_encode(array('sucess'=>TRUE, 'message'=>'Employee has been created successfully'));
+        }catch(Exception $ex){
+            return json_encode(array(
+                'success'=>FALSE,
+                'message' => 'Error in creating employee',
+                'error' => $ex->getMessage()
+            ));
+        }
+    }
+
+    function OnFetchEmployees(){
+        try{
+            $db = new Database();
+            $postData = json_decode(@file_get_contents('php://input'),TRUE);
+            $auth = $postData['auth'];
+            if(!isset($auth)){
+                throw new Exception('Authentication is required.');
+            }
+            if(!$auth){
+                throw new Exception('Please Login.');
+            }
+            $fetchEmployees = $db->OnFetchAllData('users');
+            if(!$fetchEmployees['status']){
+                throw new Exception('No epmployee found!!');
+            }
+            return json_encode(array('success'=>TRUE, 'message'=>'Fetched employee list', 'error'=>$ex->getMessage()));
+        }catch(Exception $ex){
+            return json_encode(array(
+                'success'=>FALSE,
+                'message'=>'Error in fetching employee lists',
+                'error'=>$ex->getMessage()
+            ));
+        }
+    }
+
+
 }
 ?>
