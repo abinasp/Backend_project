@@ -23,6 +23,15 @@ class UserService
             case 'login':
                 echo $this->OnLoginUser();
                 break;
+            case 'create-user':
+                echo $this->OnCreateUser();
+                break;
+            case 'get-users':
+                echo $this->OnFetchEmployees();
+                break;
+            case 'get-single-user':
+                echo $this->OnFetchSingleUser();
+                break;
             default:
                 echo json_encode(array(
                     'success' => FALSE,
@@ -119,7 +128,7 @@ class UserService
             if(!$insertUser['status']){
                 throw new Exception('Error in inserting data');
             }
-            return json_encode(array('sucess'=>TRUE, 'message'=>'Employee has been created successfully'));
+            return json_encode(array('success'=>TRUE, 'message'=>'Employee has been created successfully'));
         }catch(Exception $ex){
             return json_encode(array(
                 'success'=>FALSE,
@@ -133,18 +142,11 @@ class UserService
         try{
             $db = new Database();
             $postData = json_decode(@file_get_contents('php://input'),TRUE);
-            $auth = $postData['auth'];
-            if(!isset($auth)){
-                throw new Exception('Authentication is required.');
-            }
-            if(!$auth){
-                throw new Exception('Please Login.');
-            }
             $fetchEmployees = $db->OnFetchAllData('users');
             if(!$fetchEmployees['status']){
                 throw new Exception('No epmployee found!!');
             }
-            return json_encode(array('success'=>TRUE, 'message'=>'Fetched employee list', 'error'=>$ex->getMessage()));
+            return json_encode(array('success'=>TRUE, 'message'=>'Fetched employee list', 'data'=>$fetchEmployees['data']));
         }catch(Exception $ex){
             return json_encode(array(
                 'success'=>FALSE,
@@ -154,6 +156,27 @@ class UserService
         }
     }
 
-
+    function OnFetchSingleUser(){
+        try{
+            $db = new Database();
+            $postData = json_decode(@file_get_contents('php://input'),TRUE);
+            $userId = $postData['user_id'];
+            if(!isset($userId)){
+                throw new Exception('Employee id is required.');
+            }
+            $userData = array('id'=>$userId);
+            $fetchEmployee = $db->OnFetchSingle('users',$userData);
+            if(!$fetchEmployee['status']){
+                throw new Exception("Employee doesn't exist");
+            }
+            return json_encode(array('success'=>TRUE,'message'=>'One employee found!!','data'=>$fetchEmployee['data']));
+        }catch(Exception $ex){
+            return json_encode(array(
+                'success'=>FALSE,
+                'message'=>'Error in fetching customer',
+                'error'=> $ex->getMessage()
+            ));
+        }
+    }
 }
 ?>
